@@ -1045,6 +1045,32 @@ namespace stellar_dotnet_sdk_test
         }
 
         [TestMethod]
+        public void TestClawbackOperation()
+        {
+            // GDQNY3PBOJOKYZSRMK2S7LHHGWZIUISD4QORETLMXEWXBI7KFZZMKTL3
+            var issuer = KeyPair.FromSecretSeed("SBPQUZ6G4FZNWFHKUWC5BEYWF6R52E3SEP7R3GWYSM2XTKGF5LNTWW4R");
+
+            // SBMSVD4KKELKGZXHBUQTIROWUAPQASDX7KEJITARP4VMZ6KLUHOGPTYW
+            var from = KeyPair.FromAccountId("GAS4V4O2B7DW5T7IQRPEEVCRXMDZESKISR7DVIGKZQYYV3OSQ5SH5LVP");
+
+            var signerKey = Signer.Ed25519PublicKey(issuer);
+
+            var operation = new ClawbackOperation.Builder("TEST", from, "100")
+                .SetSourceAccount(issuer)
+                .Build();
+
+            var xdr = operation.ToXdr();
+
+            var parsedOperation = (ClawbackOperation)Operation.FromXdr(xdr);
+            Assert.AreEqual(operation.SourceAccount.AccountId, parsedOperation.SourceAccount.AccountId);
+            Assert.AreEqual(operation.From.AccountId, parsedOperation.From.AccountId);
+            Assert.AreEqual(operation.AssetCode, parsedOperation.AssetCode);
+            Assert.AreEqual(operation.Amount, parsedOperation.Amount);
+
+            Assert.AreEqual("AAAAAQAAAADg3G3hclysZlFitS+s5zWyiiJD5B0STWy5LXCj6i5yxQAAABMAAAABVEVTVAAAAAAlyvHaD8duz+iEXkJUUbsHkklIlH46oMrMMYrt0odkfgAAAAA7msoA", operation.ToXdrBase64());
+        }
+
+        [TestMethod]
         public void TestFromXdrAmount()
         {
             Assert.AreEqual("0", Operation.FromXdrAmount(0L));

@@ -57,7 +57,7 @@ namespace stellar_dotnet_sdk
             op.Trustor = trustor;
 
             // asset
-            var asset = new sdkxdr.AllowTrustOp.AllowTrustOpAsset();
+            var asset = new sdkxdr.AssetCode();
             if (AssetCode.Length <= 4)
             {
                 asset.Discriminant = sdkxdr.AssetType.Create(sdkxdr.AssetType.AssetTypeEnum.ASSET_TYPE_CREDIT_ALPHANUM4);
